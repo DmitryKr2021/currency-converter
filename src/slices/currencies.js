@@ -2,30 +2,38 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
+  countries: {},
   currencies: null,
-  activeCurrency: 0,
-  enterCurrency: 0,
-  searchString: '',
+  activeCurrency: {},
+  enterCurrency: {},
+  searchString: {},
   scrollSelect: null,
   usdRates: [],
   selectedCurrency: null,
+  location: {},
 };
 
 const currenciesSlice = createSlice({
   name: 'currency',
   initialState,
   reducers: {
+    setCountriesMini: (state, { payload }) => {
+      state.countries = payload;
+    },
     setCurrencies: (state, { payload }) => {
       state.currencies = payload;
     },
     setActiveCurrency: (state, { payload }) => {
-      state.activeCurrency = payload;
+      const [idValue, value] = payload;
+      state.activeCurrency[idValue] = value;
     },
     setEnterCurrency: (state, { payload }) => {
-      state.enterCurrency = payload;
+      const [idValue, currency] = payload;
+      state.enterCurrency[idValue] = currency;
     },
     searchCurrency: (state, { payload }) => {
-      state.searchString = payload;
+      const [idValue, value] = payload;
+      state.searchString[idValue] = value;
     },
     setScrollSelect: (state, { payload }) => {
       state.scrollSelect = payload;
@@ -36,10 +44,14 @@ const currenciesSlice = createSlice({
     setSelectedCurrency: (state, { payload }) => {
       state.selectedCurrency = payload;
     },
+    setLocation: (state, { payload }) => {
+      state.location = payload;
+    },
   },
 });
 
 export const {
+  setCountriesMini,
   setCurrencies,
   setActiveCurrency,
   setEnterCurrency,
@@ -47,5 +59,6 @@ export const {
   setScrollSelect,
   setUSDRates,
   setSelectedCurrency,
+  setLocation,
  } = currenciesSlice.actions;
 export default currenciesSlice.reducer;

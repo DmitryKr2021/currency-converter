@@ -2,10 +2,16 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { ListGroup } from 'react-bootstrap';
 import ScrollIntoView from 'react-scroll-into-view';
-import { setActiveCurrency, setEnterCurrency, setSelectedCurrency } from '../slices/currencies';
+import {
+  setActiveCurrency,
+  setEnterCurrency,
+  setSelectedCurrency,
+} from '../slices/currencies';
 import '../css/flag-icon.css';
 
-const Currencies = () => {
+const Currencies = (prop) => {
+  const { idValue } = prop;
+  const dataName = `${idValue}list`;
   const [currencyData, setCurrencyData] = useState(null);
   const dispatch = useDispatch();
 
@@ -16,7 +22,7 @@ const Currencies = () => {
     (state) => state.currenciesSlice.enterCurrency,
   );
   const searchString = useSelector(
-    (state) => state.currenciesSlice.searchString,
+    (state) => state.currenciesSlice.searchString[idValue],
   );
   const currencies = useSelector((state) => state.currenciesSlice.currencies);
 
@@ -24,34 +30,39 @@ const Currencies = () => {
 
   const handleClick = (e) => {
     e.preventDefault();
-    dispatch(setActiveCurrency(+e.target.id));
-    refScroll.current = `[data-id=d${+e.target.id}]`;
+    const params = [idValue, e.target.id];
+    dispatch(setActiveCurrency(params));
+    refScroll.current = `[data-id=d${e.target.id}]`;
   };
 
-  const divs = document.querySelectorAll('div[data-list="list"]');
+  const divs = document.querySelectorAll(`div[data-list=${dataName}]`);
   divs.forEach((div) => div.addEventListener('click', handleClick));
 
   useEffect(() => {
     if (currencies) {
-      const targetCurr = currencies.filter(
-        (curr) =>
-          curr.c.toLowerCase().indexOf(searchString.toLowerCase(), 0) === 0,
-      );
+      const targetCurr = searchString
+        ? currencies.filter(
+            (curr) =>
+              curr.c.toLowerCase().indexOf(searchString?.toLowerCase(), 0) ===
+              0,
+          )
+        : currencies;
       setCurrencyData(targetCurr);
       dispatch(setSelectedCurrency(targetCurr));
     }
-  }, [searchString, currencies, dispatch]);
+  }, [searchString, currencies, dispatch, idValue]);
 
   const handleEnter = (e, currency) => {
     e.target.style = 'cursor: pointer';
-    dispatch(setEnterCurrency(currency));
+    const params = [idValue, currency];
+    dispatch(setEnterCurrency(params));
   };
 
-  const getClassName = (currency) => {
-    switch (currency) {
-      case activeCurrency:
+  const getClassName = (keyId) => {
+    switch (keyId) {
+      case activeCurrency[idValue]:
         return 'bg-primary text-white';
-      case enterCurrency:
+      case enterCurrency[idValue]:
         return 'bg-info';
       default:
         return 'bg-light';
@@ -76,17 +87,18 @@ const Currencies = () => {
   return (
     <div className="text-truncate">
       <ScrollIntoView selector={refScroll.current}>
-        <ListGroup style={{ width: 300 }} id="list">
+        <ListGroup style={{ width: 300 }} id={dataName}>
           {currencyData?.map((currency) => {
             const { i2, i3, c, idNumber } = currency;
+            const keyId = idValue + idNumber;
             return (
               <ListGroup.Item
-                key={idNumber}
-                id={idNumber}
-                className={getClassName(idNumber)}
-                onMouseEnter={(e) => handleEnter(e, idNumber)}
-                data-id={`d${idNumber}`}
-                data-list="list"
+                key={keyId}
+                id={keyId}
+                className={getClassName(keyId)}
+                onMouseEnter={(e) => handleEnter(e, keyId)}
+                data-id={`d${keyId}`}
+                data-list={dataName}
               >
                 <span className={getFlag(i2, c)}></span>
                 {i3}

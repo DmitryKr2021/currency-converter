@@ -48,7 +48,7 @@ const MainPage = () => (
           <Converter />
         </div>
         <div
-          className="tab-pane fade"
+          className="tab-pane fade pb-4"
           id="nav-currency"
           role="tabpanel"
           aria-labelledby="nav-currency-tab"

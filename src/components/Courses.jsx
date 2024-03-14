@@ -1,4 +1,3 @@
-// import React, { useState, useEffect } from 'react';
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { ListGroup } from 'react-bootstrap';
@@ -26,7 +25,7 @@ const Courses = () => {
 
   return (
     <div className="d-flex ms-2">
-      <ListGroup style={{ width: 100, textAlign: "right" }}>
+      <ListGroup style={{ width: 120, textAlign: "right" }}>
         {selectedCurrency?.map((currency) => (
           <ListGroup.Item
             as="li"
@@ -43,8 +42,3 @@ const Courses = () => {
 };
 
 export default Courses;
-
-/* 
-<span>{currency.idNumber}</span> 
-<span>{currency.i3.slice(0, 3)}</span>
-*/

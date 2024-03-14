@@ -7,12 +7,15 @@ import createContriesArray from './utils/getCountries';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import { setCurrencies, setUSDRates } from './slices/currencies';
+import { setCountriesMini, setCurrencies, setUSDRates } from './slices/currencies';
 import CurrencyContext from './components/contexts/index.jsx';
 
 const runApp = async () => {
-
+  const { dispatch } = store;
   const countries = createContriesArray();
+  const countriesMini = {};
+  countries.forEach((country) => {countriesMini[country.i2] = country.c});
+  dispatch(setCountriesMini(countriesMini));
   const [greatBritain] = countries.filter((country) => country.n === 'England');
   greatBritain.i3 = 'GBP -';
   const currencies = [...countries];
@@ -41,10 +44,8 @@ const runApp = async () => {
       resultCur.push(currency);
     }
   };
-
+  // const { dispatch } = store;
   const root = ReactDOM.createRoot(document.getElementById('root'));
-  const { dispatch } = store;
-
   const baseUrl = 'https://api.currencybeacon.com/v1/';
   const API_KEY = 'koPySd4oaPMxR4a4omShWagFcKwC3Hw2';
   const requestData = async () => {
@@ -59,7 +60,6 @@ const runApp = async () => {
           return elem;
         } )
         dispatch(setCurrencies(result));
-        // return response.data;
       })
       .catch(() => {
         // const notify = () => toast.error(t('toasts.dataNotLoaded'));

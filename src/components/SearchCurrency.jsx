@@ -6,7 +6,8 @@ import { InputGroup, Form } from 'react-bootstrap';
 import { searchCurrency } from '../slices/currencies';
 import usd from '../imgs/usd.jpg';
 
-const SearchCurrency = () => {
+const SearchCurrency = (prop) => {
+  const {idValue} = prop;
   const [searchValue, setSearchValue] = useState('');
   const dispatch = useDispatch();
   const [inputValid, setInputValid] = useState(true);
@@ -34,8 +35,9 @@ const SearchCurrency = () => {
 
   const handleChange = (e) => {
     const { value } = e.target;
+    const params = [idValue, value];
     setSearchValue(value);
-    dispatch(searchCurrency(value));
+    dispatch(searchCurrency(params));
     checkInputValue(value);
   };
 
